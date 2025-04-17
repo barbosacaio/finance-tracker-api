@@ -11,6 +11,14 @@ let transactions = [
     { id: 2, type: 'expense', description: 'New computer', amount: 4500 }
 ];
 
+function isValidTransaction(type, description, amount) {
+    return (
+        (type === 'income' || type === 'expense') &&
+        typeof description === 'string' &&
+        typeof amount === 'number'
+    );
+};
+
 // GET route to run a test
 app.get('/', (req, res) => {
     res.send('Finance API working!');
@@ -42,7 +50,7 @@ app.get('/balance', (req, res) => {
 // POST route to add a new transaction
 app.post('/transactions', (req, res) => {
     const { type, description, amount } = req.body;
-    if (!type || (type !== 'income' && type !== 'expense') || !description || typeof description !== 'string' || !amount || typeof amount !== 'number') {
+    if (!isValidTransaction(type, description, amount)){
         return res.status(400).json({ error: 'Invalid transaction data' });
     }
     const newTransaction = {
@@ -53,6 +61,37 @@ app.post('/transactions', (req, res) => {
     };
     transactions.push(newTransaction);
     res.status(201).json(newTransaction);
+});
+
+// PUT route to update a transaction
+app.put('/transactions/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const { type, description, amount } = req.body;
+    if (!isValidTransaction(type, description, amount)){
+        return res.status(400).json({ error: 'Invalid transaction data' });
+    }
+    const transaction = transactions.find(t => t.id === id);
+    if (!transaction) {
+        return res.status(404).json({ error: 'Transaction not found' });
+    }
+
+    transaction.type = type;
+    transaction.description = description;
+    transaction.amount = amount;
+    return res.status(200).json(transaction);
+    
+})
+
+// DELETE route to delete a transaction
+app.delete('/transactions/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const transactionIndex = transactions.findIndex(t => t.id === id);
+    if (transactionIndex === -1) {
+        return res.status(404).json({ error: 'Transaction not found' });
+    } else {
+        transactions.splice(transactionIndex, 1);
+        return res.status(204).send();
+    }
 });
 
 // Initiate the server

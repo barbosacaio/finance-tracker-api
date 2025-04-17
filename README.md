@@ -1,4 +1,4 @@
-# 🧠 Finance Tracker API
+# 💲 Finance Tracker API
 
 This project is an additional API made with **Node.js** and the **Express** framework, that simulates a finance management system with the ability to add new transactions and check your balance
 
@@ -8,6 +8,8 @@ This project is an additional API made with **Node.js** and the **Express** fram
 
 - `GET /transactions` - Lists all existing transactions
 - `POST /transactions` - Adds a new transaction
+- `PUT /transactions/:id` - Updates an existing transaction by ID
+- `DELETE /transactions:id` - Deletes an existing transaction by ID
 - `GET /balance` - Shows a summary of all transactions by type + the balance
 
 ---
